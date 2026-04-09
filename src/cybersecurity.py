@@ -19,8 +19,8 @@ Mitigation:
 import hashlib
 import json
 import time as time_module
-from dataclasses import dataclass, field, asdict
-from typing import List, Optional
+from dataclasses import dataclass, asdict
+from typing import List
 
 
 @dataclass
@@ -276,5 +276,4 @@ def validate_sensor_inputs(tmt_readings: list,
     }
 
 
-# Need numpy for sensor validation
-import numpy as np
+import numpy as np  # noqa: E402 — needed for sensor validation below

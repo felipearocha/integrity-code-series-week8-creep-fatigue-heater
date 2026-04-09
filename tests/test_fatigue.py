@@ -5,7 +5,6 @@ Tests thermal strain, Coffin-Manson fatigue life, damage fraction computation,
 and epsilon-N curve generation for 9Cr-1Mo at high temperature.
 """
 
-import pytest
 import numpy as np
 
 
@@ -170,13 +169,10 @@ class TestCoffinMansonLife:
         nf1 = fatigue.coffin_manson_life(eps1)
         nf2 = fatigue.coffin_manson_life(eps2)
 
-        # Strain ratio should be (N ratio)^(-beta)
-        # With beta ~ 0.6, strain should increase faster than N decreases
-        ratio_strain = eps2 / eps1
-        ratio_life = nf1 / nf2
-
-        # ratio_strain should be > ratio_life^(-beta) approximately
-        assert ratio_strain > 1.0, "Verification"
+        # Higher strain should give shorter life
+        assert nf2 < nf1, "Higher strain must give shorter life"
+        # Strain ratio should be > 1
+        assert eps2 / eps1 > 1.0, "Verification"
 
 
 class TestStrainRangeAtLife:
@@ -358,11 +354,6 @@ class TestFatigueCurveShape:
         # At low life: plastic dominates, steeper slope
         # At high life: elastic dominates, shallower slope
         # Verify this by checking tangent slopes
-
-        # High-life regime (last 50 points)
-        n_high = 50
-        slope_high = (np.log(eps_total[-1]) - np.log(eps_total[-n_high-1])) / \
-                     (np.log(nf_array[-1]) - np.log(nf_array[-n_high-1]))
 
         # Just verify both regimes exist
         assert len(eps_total) > 10

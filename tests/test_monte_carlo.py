@@ -4,7 +4,6 @@ Comprehensive test suite for src/monte_carlo.py.
 Tests Latin Hypercube Sampling, parametric sweep, and sensitivity analysis.
 """
 
-import pytest
 import numpy as np
 
 

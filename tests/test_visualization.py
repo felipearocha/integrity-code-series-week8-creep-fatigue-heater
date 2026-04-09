@@ -5,7 +5,6 @@ Tests check for file existence, readability, and non-zero sizes
 for all source and test modules.
 """
 
-import pytest
 import os
 
 # Project root: one level up from tests/

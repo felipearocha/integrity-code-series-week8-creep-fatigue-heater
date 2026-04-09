@@ -5,7 +5,6 @@ Tests parabolic oxidation kinetics, Arrhenius temperature dependence,
 metal loss, effective wall thickness degradation, and failure criteria.
 """
 
-import pytest
 import numpy as np
 
 
@@ -389,7 +388,6 @@ class TestOxidationTemperatureSensitivity:
         # Q = 250 kJ/mol, so 50K change should give significant increase
         T1 = 873.15
         T2 = 923.15
-        delta_T = T2 - T1
 
         x1 = oxidation.oxide_thickness(1.0e7, T1)
         x2 = oxidation.oxide_thickness(1.0e7, T2)

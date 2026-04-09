@@ -7,7 +7,6 @@ and integration routines. Includes edge cases, physics monotonicity, and known b
 
 import pytest
 import numpy as np
-from scipy.optimize import brentq
 
 
 class TestNortonCreepRate:
@@ -65,7 +64,6 @@ class TestNortonCreepRate:
 
     def test_stress_exponent_sensitivity(self, creep_engine, config):
         """Test sensitivity to Norton stress exponent."""
-        sigma = 100.0e6
         T = 873.15
         n = config.NORTON_N
 
@@ -385,7 +383,8 @@ class TestNortonIntegration:
 
         # Constant stress function
         sigma_const = 100.0e6
-        sigma_func = lambda t, eps: sigma_const
+        def sigma_func(t, eps):
+            return sigma_const
 
         times, strains, rates = creep_engine.integrate_creep_norton(
             sigma_func, T, dt_s, total_time_s
@@ -402,7 +401,8 @@ class TestNortonIntegration:
         total_time_s = 10000.0
 
         sigma_const = 100.0e6
-        sigma_func = lambda t, eps: sigma_const
+        def sigma_func(t, eps):
+            return sigma_const
 
         times, strains, rates = creep_engine.integrate_creep_norton(
             sigma_func, T, dt_s, total_time_s
@@ -420,7 +420,8 @@ class TestNortonIntegration:
         max_strain = 0.02
 
         sigma_const = 200.0e6  # High stress for faster creep
-        sigma_func = lambda t, eps: sigma_const
+        def sigma_func(t, eps):
+            return sigma_const
 
         times, strains, rates = creep_engine.integrate_creep_norton(
             sigma_func, T, dt_s, total_time_s, max_strain=max_strain
@@ -437,7 +438,8 @@ class TestNortonIntegration:
         total_time_s = 5000.0
 
         sigma_const = 100.0e6
-        sigma_func = lambda t, eps: sigma_const
+        def sigma_func(t, eps):
+            return sigma_const
 
         times, strains, rates = creep_engine.integrate_creep_norton(
             sigma_func, T, dt_s, total_time_s
@@ -452,7 +454,8 @@ class TestNortonIntegration:
         total_time_s = 2000.0
 
         sigma_const = 100.0e6
-        sigma_func = lambda t, eps: sigma_const
+        def sigma_func(t, eps):
+            return sigma_const
 
         times, strains, rates = creep_engine.integrate_creep_norton(
             sigma_func, T, dt_s, total_time_s
@@ -473,7 +476,8 @@ class TestOmegaIntegration:
         total_time_s = 100000.0
 
         sigma_const = 100.0e6
-        sigma_func = lambda t, eps: sigma_const
+        def sigma_func(t, eps):
+            return sigma_const
 
         times, strains, rates = creep_engine.integrate_creep_omega(
             sigma_func, T, dt_s, total_time_s
@@ -494,7 +498,8 @@ class TestOmegaIntegration:
         total_time_s = t_rupture_s * 1.5  # 50% margin
 
         sigma_const = 100.0e6
-        sigma_func = lambda t, eps: sigma_const
+        def sigma_func(t, eps):
+            return sigma_const
 
         times, strains, rates = creep_engine.integrate_creep_omega(
             sigma_func, T, dt_s, total_time_s
@@ -513,7 +518,8 @@ class TestOmegaIntegration:
         total_time_s = 100000.0
 
         sigma_const = 100.0e6
-        sigma_func = lambda t, eps: sigma_const
+        def sigma_func(t, eps):
+            return sigma_const
 
         times, strains, rates = creep_engine.integrate_creep_omega(
             sigma_func, T, dt_s, total_time_s
@@ -534,7 +540,8 @@ class TestOmegaIntegration:
         eps_dot_0_custom = 1.0e-10
 
         sigma_const = 100.0e6
-        sigma_func = lambda t, eps: sigma_const
+        def sigma_func(t, eps):
+            return sigma_const
 
         times, strains, rates = creep_engine.integrate_creep_omega(
             sigma_func, T, dt_s, total_time_s,
@@ -553,7 +560,8 @@ class TestIntegrationMonotonicity:
         dt_s = 100.0
         total_time_s = 5000.0
         sigma_const = 100.0e6
-        sigma_func = lambda t, eps: sigma_const
+        def sigma_func(t, eps):
+            return sigma_const
         max_strain = 0.01
 
         times_low, strains_low, _ = creep_engine.integrate_creep_norton(
@@ -579,8 +587,11 @@ class TestIntegrationMonotonicity:
         sigma_low = 80.0e6
         sigma_high = 150.0e6
 
-        sigma_func_low = lambda t, eps: sigma_low
-        sigma_func_high = lambda t, eps: sigma_high
+        def sigma_func_low(t, eps):
+            return sigma_low
+
+        def sigma_func_high(t, eps):
+            return sigma_high
 
         times_low, strains_low, _ = creep_engine.integrate_creep_norton(
             sigma_func_low, T, dt_s, total_time_s, max_strain=max_strain

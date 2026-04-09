@@ -5,7 +5,6 @@ Tests the integrated fired heater tube life model that couples creep, fatigue, a
 Includes baseline runs, parameter sensitivity, physics monotonicity, and failure modes.
 """
 
-import pytest
 import numpy as np
 
 
@@ -445,7 +444,6 @@ class TestEnvelopeComplianceIntegration:
                 violations += 1
 
         # Should have violations only at or near end
-        total_points = len(result.within_envelope)
         if violations > 0:
             # Last few points may be outside
             assert violations <= 5, "Violations should be only at end"

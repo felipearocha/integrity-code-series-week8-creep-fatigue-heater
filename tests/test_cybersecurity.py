@@ -4,9 +4,6 @@ Comprehensive test suite for src/cybersecurity.py.
 Tests audit chain integrity, STRIDE threat model, and sensor validation.
 """
 
-import pytest
-import numpy as np
-import time
 
 
 class TestAuditChain:
@@ -155,9 +152,6 @@ class TestSTRIDEModel:
         threats = cybersecurity.build_stride_model()
 
         categories = set(t.category for t in threats)
-        expected = {"Spoofing", "Tampering", "Repudiation",
-                    "Information Disclosure", "Denial of Service",
-                    "Elevation of Privilege"}
 
         # At least these categories should be present
         assert "Spoofing" in categories
@@ -214,9 +208,6 @@ class TestSTRIDEModel:
     def test_threats_specific_to_heater_monitoring(self, cybersecurity):
         """Threats should be specific to fired heater tube monitoring."""
         threats = cybersecurity.build_stride_model()
-
-        # Check for domain-specific mentions
-        all_text = " ".join(t.threat + " " + t.mitigation for t in threats)
 
         # Should mention key concepts
         assert any("tube" in t.threat.lower() or "TMT" in t.threat
