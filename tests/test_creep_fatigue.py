@@ -5,7 +5,6 @@ Tests creep-fatigue interaction envelope (ASME III-5), damage accumulation,
 and interaction assessment for 9Cr-1Mo (Gr91) steel.
 """
 
-import pytest
 import numpy as np
 
 
