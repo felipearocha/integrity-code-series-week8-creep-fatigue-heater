@@ -1,0 +1,51 @@
+{
+  "title": "Integrity Code Series - Week 8 - High-Temperature Creep-Fatigue Interaction in Fired Heater Tubes",
+  "description": "<p>Coupled creep-fatigue degradation simulator for fired-heater tubes in 9Cr-1Mo-V-Nb steel (ASME Grade T91 / P91). Implements Norton power-law secondary creep, MPC Omega tertiary creep (API 579-1 Part 10), Larson-Miller minimum stress (API 530), parabolic Wagner oxide growth, Coffin-Manson low-cycle fatigue, and the ASME Section III Division 5 bilinear creep-fatigue interaction envelope for Gr91. The coupling is physical: oxide growth thins the wall, thinning increases hoop stress, higher stress accelerates creep, and combined damage is checked against the envelope.</p><p>Anchored to Marathon Martinez CSB Report (2025-03-13) and API STD 560:2026. 324 tests. Result: a 40C hot spot increases creep damage by 15x.</p>",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Rocha, Felipe",
+      "affiliation": "Independent Researcher"
+    }
+  ],
+  "keywords": [
+    "creep-fatigue",
+    "T91",
+    "P91",
+    "9Cr-1Mo",
+    "fired heater",
+    "Norton creep",
+    "MPC Omega method",
+    "Larson-Miller",
+    "Coffin-Manson",
+    "API 530",
+    "API 579 Part 10",
+    "API 571",
+    "ASME III Division 5",
+    "ASME Section III-5",
+    "Wagner oxidation",
+    "high temperature integrity"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/felipearocha/integrity-code-series-week8-creep-fatigue-heater",
+      "scheme": "url",
+      "resource_type": "software"
+    }
+  ],
+  "references": [
+    "API STD 530 (2023). Calculation of Heater-Tube Thickness in Petroleum Refineries.",
+    "API 579-1 / ASME FFS-1 (2016). Fitness-for-Service, Part 10 Creep.",
+    "ASME (2019). ASME Section III Division 5: High Temperature Reactors.",
+    "API 571 (2020). Damage Mechanisms Affecting Fixed Equipment in the Refining Industry.",
+    "API STD 560 (2026). Fired Heaters for General Refinery Service.",
+    "U.S. Chemical Safety Board (2025). Marathon Martinez Refinery Heater Tube Rupture, Report 2025-03-13.",
+    "NIMS Data Sheet 43A. Creep rupture of 9Cr-1Mo-V-Nb steel.",
+    "Wagner C. (1933). Beitrag zur Theorie des Anlaufvorgangs. Zeitschrift fur Physikalische Chemie 21B: 25-41."
+  ],
+  "language": "eng",
+  "version": "1.0.1"
+}

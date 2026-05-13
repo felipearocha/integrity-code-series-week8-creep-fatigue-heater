@@ -1,6 +1,6 @@
 [project]
 name = "integrity-code-series-week8-creep-fatigue-heater"
-version = "1.0.0"
+version = "1.0.1"
 description = "Coupled creep-fatigue-oxidation life prediction for fired heater tubes (9Cr-1Mo T91)"
 readme = "README.md"
 license = {text = "MIT"}
