@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Integrity Code Series — Week 8 — Governing Equations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        tags: 'ams'
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --navy: #1b3a5c;
+      --steel: #4c80b0;
+      --red: #8c2318;
+      --teal: #2e7d7b;
+      --charcoal: #333333;
+      --gold: #8B6914;
+      --bg: #fbfbfb;
+      --card: #ffffff;
+      --border: #e2e6ec;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 24px 96px 24px;
+      color: var(--charcoal);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+    header {
+      border-bottom: 2px solid var(--navy);
+      padding-bottom: 18px;
+      margin-bottom: 26px;
+    }
+    h1 { color: var(--navy); font-size: 26px; margin: 0 0 6px 0; }
+    .subtitle { color: var(--steel); font-size: 14px; margin: 0; }
+    h2 {
+      color: var(--navy);
+      border-left: 4px solid var(--teal);
+      padding-left: 12px;
+      margin-top: 38px;
+      font-size: 19px;
+    }
+    h3 { color: var(--charcoal); margin-top: 26px; margin-bottom: 6px; font-size: 15px; font-weight: 700; }
+    .eq-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin: 12px 0 18px 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .src { font-size: 12px; color: var(--gold); font-style: italic; margin: 6px 0 10px 0; }
+    .code-ref {
+      font-family: "SF Mono", "Consolas", "Menlo", monospace;
+      font-size: 11.5px;
+      color: var(--steel);
+      background: #f1f4f7;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    .toc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 20px;
+      margin-bottom: 30px;
+    }
+    .toc ol { margin: 4px 0 0 0; padding-left: 22px; }
+    .toc a { color: var(--navy); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; color: var(--red); }
+    .note {
+      background: #fff8e6;
+      border-left: 3px solid var(--gold);
+      padding: 10px 14px;
+      margin: 14px 0;
+      font-size: 13px;
+      color: #5b4a1d;
+    }
+    .disclaimer {
+      margin-top: 50px;
+      padding: 16px 20px;
+      background: #fef0ee;
+      border-left: 3px solid var(--red);
+      font-size: 13px;
+      color: #6b2418;
+    }
+    footer {
+      margin-top: 36px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Integrity Code Series — Week 8</h1>
+  <p class="subtitle">High-Temperature Creep-Fatigue Interaction in Fired Heater Tubes — Governing Equations Reference</p>
+  <p class="subtitle"><strong>Felipe Rocha</strong></p>
+</header>
+
+<div class="toc">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#norton">Norton Power-Law Creep (Secondary)</a></li>
+    <li><a href="#omega">MPC Omega Method (API 579-1 Part 10, Tertiary)</a></li>
+    <li><a href="#lmp">Larson-Miller Parameter (API 530)</a></li>
+    <li><a href="#oxide">Parabolic Oxide Growth (Wagner 1933)</a></li>
+    <li><a href="#coffin">Coffin-Manson Thermal Fatigue</a></li>
+    <li><a href="#interaction">Creep-Fatigue Interaction (ASME III-5)</a></li>
+    <li><a href="#hoop">Hoop Stress (Barlow / API 530)</a></li>
+  </ol>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<h2 id="norton">1. Norton Power-Law Creep (Secondary)</h2>
+
+<div class="eq-card">
+$$
+\frac{d\varepsilon_{cr}}{dt} \;=\; A\,\sigma^{\,n}\,\exp\!\left(-\frac{Q_{cr}}{R\,T}\right)
+$$
+with $A = 7.86\times10^{-57}\ \mathrm{[1/(s\cdot Pa^{\,n})]}$, $n = 10.5$, $Q_{cr} = 600\ \mathrm{kJ/mol}$.
+<p class="src">SOURCE: Calibrated to NIMS Creep Data Sheet No. 43A (2014) — 9Cr-1Mo-V-Nb, single point $1\times10^{-8}\ \mathrm{/s}$ at 100 MPa, 873 K.</p>
+<p>Code: <span class="code-ref">src/creep_engine.py → norton_creep_rate, integrate_creep_norton</span>.</p>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<h2 id="omega">2. MPC Omega Method — API 579-1 Part 10 (Tertiary)</h2>
+
+<div class="eq-card">
+$$
+\dot{\varepsilon} \;=\; \dot{\varepsilon}_0\,\exp\!\left(\Omega\,\varepsilon_{cr}\right),
+\qquad
+\varepsilon_{\text{rupture}} \;=\; \frac{1}{\Omega}
+$$
+with $\Omega = 7.5$, $\dot{\varepsilon}_0 = 3.2\times10^{-10}\ \mathrm{/s}$ at 580 °C / 42 MPa, giving rupture strain $1/\Omega = 0.133$.
+<p class="src">SOURCE: MPC Omega method, API 579-1/ASME FFS-1 Part 10 (Creep Assessment).</p>
+<p>Code: <span class="code-ref">src/creep_engine.py → omega_creep_rate, omega_rupture_strain, omega_rupture_time, integrate_creep_omega</span>.</p>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<h2 id="lmp">3. Larson-Miller Parameter — API 530</h2>
+
+<div class="eq-card">
+$$
+\mathrm{LMP} \;=\; T\,\bigl(C + \log_{10} t_r\bigr),
+\qquad C = 20 \ \text{for 9Cr-1Mo}
+$$
+$$
+\log_{10}\sigma_{\mathrm{MPa}} \;=\; 0.672 + 3.80\times10^{-4}\,\mathrm{LMP} - 1.50\times10^{-8}\,\mathrm{LMP}^{2}
+$$
+<div class="note">Anchor points: $\mathrm{LMP}=19000 \to 300\ \mathrm{MPa}$; $\mathrm{LMP}=21325 \to 90\ \mathrm{MPa}$; $\mathrm{LMP}=23000 \to 30\ \mathrm{MPa}$ (3-point fit of the API 530 minimum-rupture-stress curve).</div>
+<p class="src">SOURCE: API 530, 7th Edition — Calculation of Heater-Tube Thickness in Petroleum Refineries.</p>
+<p>Code: <span class="code-ref">src/creep_engine.py → larson_miller_parameter, rupture_stress_from_lmp, rupture_time_api530</span>.</p>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<h2 id="oxide">4. Parabolic Oxide Growth — Wagner 1933</h2>
+
+<div class="eq-card">
+$$
+x^{2} \;=\; k_p\,t,
+\qquad
+k_p \;=\; k_{p0}\,\exp\!\left(-\frac{Q_{ox}}{R\,T}\right)
+$$
+with $k_{p0} = 4.08\times10^{-4}\ \mathrm{m^2/s}$, $Q_{ox} = 250\ \mathrm{kJ/mol}$.
+Effective metal loss $= 0.60\,x$ <strong>[ASSUMED]</strong> (spallation estimate).
+<p class="src">SOURCE: Parabolic law — Wagner (1933); kinetics — Quadakkers et al. (2005), <em>Oxidation of Metals</em> 64, 175–209 (9Cr in air).</p>
+<p>Code: <span class="code-ref">src/oxidation.py → parabolic_rate_constant, oxide_thickness, metal_loss, effective_wall_thickness</span>.</p>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<h2 id="coffin">5. Coffin-Manson Thermal Fatigue</h2>
+
+<div class="eq-card">
+$$
+\Delta\varepsilon \;=\; C_1\,N_f^{-\beta_1} \;+\; C_2\,N_f^{-\beta_2}
+$$
+with $C_1 = 0.0045$, $\beta_1 = 0.085$ (Basquin elastic term) and $C_2 = 0.48$, $\beta_2 = 0.58$ (Coffin-Manson plastic term).
+<p class="src">SOURCE: Fournier et al. (2008), <em>Int. J. Fatigue</em> 30, 1797–1812 (T91 at 500–600 °C).</p>
+<p>Code: <span class="code-ref">src/fatigue.py → coffin_manson_life, strain_range_at_life, fatigue_life_curve</span>.</p>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<h2 id="interaction">6. Creep-Fatigue Interaction — ASME III-5</h2>
+
+<div class="eq-card">
+$$
+D_f \;=\; \sum_j \frac{n_j}{N_{f,j}}
+\qquad\text{(fatigue damage fraction)}
+$$
+$$
+D_c \;=\; \sum_k \frac{\Delta t_k}{t_{r,k}}
+\qquad\text{(creep damage fraction, time-fraction rule)}
+$$
+<div class="note">Gr91 bilinear interaction envelope: $(1,0) \to (0.1,\,0.01) \to (0,1)$. Damage state is safe when it lies inside the envelope.</div>
+<p class="src">SOURCE: ASME Section III Division 5 — Code Case N-812; ORNL/TM-2018/868 (Messner &amp; Sham, creep-fatigue procedures for Gr91).</p>
+<p>Code: <span class="code-ref">src/creep_fatigue.py → creep_damage_fraction, interaction_envelope, is_within_envelope, envelope_margin</span>.</p>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<h2 id="hoop">7. Hoop Stress (Barlow / API 530)</h2>
+
+<div class="eq-card">
+$$
+\sigma \;=\; \frac{P\,D_{\text{mean}}}{2\,t_{\text{eff}}},
+\qquad
+t_{\text{eff}}(t) \;=\; t_{\text{nominal}} - 0.60\,\sqrt{k_p\,t}
+$$
+<div class="note">The wall-thinning term couples oxidation to stress: as the oxide grows, $t_{\text{eff}}$ falls, hoop stress rises, and Norton creep accelerates. The $0.60$ metal-loss fraction is <strong>[ASSUMED]</strong>.</div>
+<p class="src">SOURCE: Barlow thin-wall hoop stress; API 530.</p>
+<p>Code: <span class="code-ref">src/creep_engine.py → hoop_stress_thin_wall; src/oxidation.py → effective_wall_thickness</span>.</p>
+</div>
+
+<div class="disclaimer">
+<strong>Disclaimer:</strong> Research tool only. Not for design, fitness-for-service, or safety-critical decisions without site-specific calibration and independent PE review. Equations are grounded in the cited standards and papers; operating conditions and the oxide metal-loss fraction that are not read directly from a controlled source are marked <code>[ASSUMED]</code>. Outputs are SHA-256 hash-chained; verify with the audit chain in <code>src/cybersecurity.py</code>.
+</div>
+
+<footer>
+  Integrity Code Series — Week 8 · Felipe Rocha · 324 / 324 tests passing<br>
+  Browse the rendered panels in <code>assets/</code> for visual results.
+</footer>
+
+</body>
+</html>

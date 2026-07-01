@@ -2,7 +2,7 @@
 
 ## Overview
 
-A comprehensive pytest test suite with **328 total tests** across 9 test files, providing extensive coverage of the fired heater tube life prediction system that couples creep, fatigue, and oxidation mechanisms.
+A comprehensive pytest test suite with **324 total tests** across 9 test files, providing extensive coverage of the fired heater tube life prediction system that couples creep, fatigue, and oxidation mechanisms.
 
 ## Test Files and Coverage
 
@@ -110,7 +110,7 @@ Tests for `src/monte_carlo.py`: Latin Hypercube Sampling, parametric sweep, sens
 - `TestSweepEdgeCases` (3 tests) - Small/large samples
 - `TestSensitivityConsistency` (2 tests) - Effect magnitude detection
 
-### 9. **test_visualization.py** - 37 tests
+### 9. **test_visualization.py** - 33 tests
 Tests for project structure and file existence validation.
 
 **Test Classes:**

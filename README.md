@@ -1,14 +1,13 @@
 # Integrity Code Series — Week 8
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20172467.svg)](https://doi.org/10.5281/zenodo.20172467)
-
 ## High-Temperature Creep-Fatigue Interaction in Fired Heater Tubes
 
 [![CI](https://github.com/felipearocha/integrity-code-series-week8-creep-fatigue-heater/actions/workflows/ci.yml/badge.svg)](https://github.com/felipearocha/integrity-code-series-week8-creep-fatigue-heater/actions/workflows/ci.yml)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests: 324](https://img.shields.io/badge/tests-324%20passing-brightgreen.svg)]()
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![Tests: 324 passing](https://img.shields.io/badge/tests-324%20passing-brightgreen.svg)](tests)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20172467.svg)](https://doi.org/10.5281/zenodo.20172467)
 
 ---
 
@@ -25,9 +24,10 @@ Part of an ongoing series of physics-first integrity simulators by Felipe Rocha:
 | Week 3 | [Integrity-code-series-3](https://github.com/felipearocha/Integrity-code-series-3) | F1 lap simulation (six coupled ODEs) |
 | Week 6 | [Integrity-code-series-week6-smartphone-galvanic](https://github.com/felipearocha/Integrity-code-series-week6-smartphone-galvanic) | Smartphone galvanic corrosion (Laplace + Butler-Volmer) |
 | Week 7 | [integrity_code_series_week7_h2_lferw](https://github.com/felipearocha/integrity_code_series_week7_h2_lferw) | LF-ERW H2 conversion (B31.12 + NACE TM0316) |
-| Week 8 | [integrity-code-series-week8-creep-fatigue-heater](https://github.com/felipearocha/integrity-code-series-week8-creep-fatigue-heater) | Creep-fatigue 9Cr-1Mo (Norton/Omega + Coffin-Manson) |
+| **Week 8** | **[integrity-code-series-week8-creep-fatigue-heater](https://github.com/felipearocha/integrity-code-series-week8-creep-fatigue-heater)** | **Creep-fatigue 9Cr-1Mo (Norton/Omega + Coffin-Manson) — this repo** |
 | Week 9 | [integrity-code-series-week9-cui](https://github.com/felipearocha/integrity-code-series-week9-cui) | CUI thermohygro-electrochemical (3 PDEs, Strang) |
 | Week 10 | [integrity-code-series-week-10_nnph_scc](https://github.com/felipearocha/integrity-code-series-week-10_nnph_scc) | NNpHSCC full-physics (Chen-Sutherby-Xing + BS 7910) |
+| Week 11 | [integrity-code-series-week11-erosion-corrosion-multiphase](https://github.com/felipearocha/integrity-code-series-week11-erosion-corrosion-multiphase) | Erosion-corrosion multiphase (NORSOK M-506 + DNV-RP-O501 + G119 + API 579 Part 5) |
 | Bonus | [Vibration-Accelerated-Corrosion-Coupled-Mechano-Electrochemical-Simulation](https://github.com/felipearocha/Vibration-Accelerated-Corrosion-Coupled-Mechano-Electrochemical-Simulation) | Vibration-accelerated corrosion (SDOF + Butler-Volmer + Archard) |
 | Bonus | [synthetic-integrity-digital-twin-piml](https://github.com/felipearocha/synthetic-integrity-digital-twin-piml) | Physics-informed neural-network surrogate |
 | Bonus | [integrity-data-foundation](https://github.com/felipearocha/integrity-data-foundation) | Engineering data validation baseline |
@@ -48,6 +48,9 @@ A fired heater tube operating in the creep regime degrades through three coupled
 > A 40 C hot spot increases creep damage by **15x** — exponential temperature sensitivity dominates all other parameters.
 
 ## Governing Equations
+
+Every constant is tagged to its source standard or paper. Full rendered (MathJax)
+reference: **[docs/equations.html](docs/equations.html)** — open in any browser.
 
 ### Norton Power-Law Creep (Secondary)
 
@@ -138,6 +141,8 @@ tests/
 ├── test_monte_carlo.py    33 tests — LHS sampling, sensitivity
 ├── test_cybersecurity.py  37 tests — audit chain, STRIDE coverage
 └── test_visualization.py  33 tests — project structure validation
+docs/
+└── equations.html         Rendered (MathJax) governing-equations reference
 ```
 
 ## Quick Start
@@ -175,7 +180,7 @@ python -m pytest tests/ -v
 | Coffin-Manson | Fournier 2008 | T91 at 500-600 C | Published |
 | Oxidation k_p | Quadakkers 2005 | 9Cr in air | Published |
 
-## Cybersecurity
+## Cybersecurity (STRIDE)
 
 STRIDE threat model with 7 assessed threats:
 - **Spoofing:** Triple-redundant TMT with 2-of-3 voting
@@ -205,10 +210,38 @@ STRIDE threat model with 7 assessed threats:
 8. ORNL/TM-2018/868 — Messner & Sham, Creep-fatigue procedures for Gr91
 9. Marathon Martinez CSB Report (2025-03-13)
 
+## Anti-Hallucination Note
+
+Every equation and constant in this package is tagged to its origin, and the
+tiers are applied honestly:
+
+- **T1 (published standard / paper):** the Norton, MPC Omega and Larson-Miller
+  forms and the ASME III-5 bilinear envelope come from API 530, API 579-1
+  Part 10 and ASME Section III Division 5 (Code Case N-812 / ORNL-TM-2018/868);
+  the Coffin-Manson coefficients from Fournier et al. 2008; the parabolic
+  oxidation kinetics from Quadakkers et al. 2005; the creep single-point anchor
+  from NIMS Creep Data Sheet 43A.
+- **T2 (derived / fitted):** the Norton pre-exponential `A` is *calibrated* to
+  the single NIMS 43A point, and the Larson-Miller minimum-stress polynomial is a
+  3-anchor *fit* of the API 530 curve. These are labelled Calibrated / Fitted in
+  the Key Assumptions table.
+- **T3 (assumed operating / modelling):** internal pressure, design temperature,
+  the thermal-cycle count, the 60% oxide metal-loss fraction and the 40%
+  wall-loss retirement criterion are engineering assumptions, each carried with
+  an **[ASSUMED]** flag in the Key Assumptions table.
+
+No constant, equation or citation is used that is not traceable to one of the
+references above; where a value is an assumption rather than a standard number it
+is flagged, not presented as measured.
+
+## Disclaimer
+
+Research tool only. Not for design, fitness-for-service, or safety-critical decisions without site-specific calibration and independent PE review.
+
 ## License
 
-[MIT](LICENSE) — See [DISCLAIMER](LICENSE) for safety-critical use limitations.
----
+MIT — Felipe Rocha. See [LICENSE](LICENSE).
+
 
 ## How to Cite
 
