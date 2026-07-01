@@ -49,72 +49,59 @@ A fired heater tube operating in the creep regime degrades through three coupled
 
 ## Governing Equations
 
-Every constant is tagged to its source standard or paper. Full rendered (MathJax)
-reference: **[docs/equations.html](docs/equations.html)** — open in any browser.
+[**view the full rendered reference**](https://htmlpreview.github.io/?https://github.com/felipearocha/integrity-code-series-week8-creep-fatigue-heater/blob/master/docs/equations.html)
+
+Every constant is tagged to its source standard or paper. The equations below
+render natively on GitHub; the full MathJax reference lives in
+**[docs/equations.html](docs/equations.html)**.
 
 ### Norton Power-Law Creep (Secondary)
 
-```
-d(eps_cr)/dt = A * sigma^n * exp(-Q_cr / (R * T))
+$$ \frac{d\varepsilon_{cr}}{dt} \;=\; A\,\sigma^{\,n}\,\exp\!\left(-\frac{Q_{cr}}{R\,T}\right) $$
 
-A = 7.86e-57 [1/(s * Pa^n)], n = 10.5, Q_cr = 600 kJ/mol
-Calibrated to NIMS Data Sheet 43A: 1e-8 /s at 100 MPa, 873 K
-```
+with $A = 7.86\times10^{-57}\ \mathrm{[1/(s\cdot Pa^{\,n})]}$, $n = 10.5$, $Q_{cr} = 600\ \mathrm{kJ/mol}$.
+Calibrated to NIMS Creep Data Sheet No. 43A (2014) — single point $1\times10^{-8}\ \mathrm{/s}$ at 100 MPa, 873 K.
 
 ### MPC Omega Method (API 579-1 Part 10, Tertiary)
 
-```
-eps_dot = eps_dot_0 * exp(Omega * eps_cr)
+$$ \dot{\varepsilon} \;=\; \dot{\varepsilon}_0\,\exp\!\left(\Omega\,\varepsilon_{cr}\right), \qquad \varepsilon_{\text{rupture}} \;=\; \frac{1}{\Omega} $$
 
-Omega = 7.5, eps_dot_0 = 3.2e-10 /s at 580C/42 MPa
-Rupture strain = 1/Omega = 0.133
-```
+with $\Omega = 7.5$, $\dot{\varepsilon}_0 = 3.2\times10^{-10}\ \mathrm{/s}$ at 580 °C / 42 MPa, giving rupture strain $1/\Omega = 0.133$.
 
 ### Larson-Miller Parameter (API 530)
 
-```
-LMP = T * (C + log10(t_r)),  C = 20 for 9Cr-1Mo
+$$ \mathrm{LMP} \;=\; T\,\bigl(C + \log_{10} t_r\bigr), \qquad C = 20 \ \text{for 9Cr-1Mo} $$
 
-Minimum rupture stress: log10(sigma_MPa) = 0.672 + 3.80e-4*LMP - 1.50e-8*LMP^2
-Anchor points: LMP=19000 -> 300 MPa, LMP=21325 -> 90 MPa, LMP=23000 -> 30 MPa
-```
+$$ \log_{10}\sigma_{\mathrm{MPa}} \;=\; 0.672 + 3.80\times10^{-4}\,\mathrm{LMP} - 1.50\times10^{-8}\,\mathrm{LMP}^{2} $$
+
+Anchor points: $\mathrm{LMP}=19000 \to 300\ \mathrm{MPa}$; $\mathrm{LMP}=21325 \to 90\ \mathrm{MPa}$; $\mathrm{LMP}=23000 \to 30\ \mathrm{MPa}$ (3-point fit of the API 530 minimum-rupture-stress curve).
 
 ### Parabolic Oxide Growth (Wagner 1933)
 
-```
-x^2 = k_p * t
-k_p = k_p0 * exp(-Q_ox / (R * T))
+$$ x^{2} \;=\; k_p\,t, \qquad k_p \;=\; k_{p0}\,\exp\!\left(-\frac{Q_{ox}}{R\,T}\right) $$
 
-k_p0 = 4.08e-4 m^2/s, Q_ox = 250 kJ/mol (Quadakkers 2005)
-Effective metal loss = 0.60 * x [ASSUMED]
-```
+with $k_{p0} = 4.08\times10^{-4}\ \mathrm{m^2/s}$, $Q_{ox} = 250\ \mathrm{kJ/mol}$ (Quadakkers et al. 2005).
+Effective metal loss $= 0.60\,x$ **[ASSUMED]** (spallation estimate).
 
 ### Coffin-Manson Thermal Fatigue
 
-```
-Delta_eps = C1 * Nf^(-beta1) + C2 * Nf^(-beta2)
+$$ \Delta\varepsilon \;=\; C_1\,N_f^{-\beta_1} \;+\; C_2\,N_f^{-\beta_2} $$
 
-C1 = 0.0045, beta1 = 0.085 (Basquin)
-C2 = 0.48, beta2 = 0.58 (Coffin-Manson)
-Reference: Fournier et al. 2008, Int. J. Fatigue 30, 1797-1812
-```
+with $C_1 = 0.0045$, $\beta_1 = 0.085$ (Basquin elastic term) and $C_2 = 0.48$, $\beta_2 = 0.58$ (Coffin-Manson plastic term). Reference: Fournier et al. (2008), *Int. J. Fatigue* 30, 1797–1812.
 
 ### Creep-Fatigue Interaction (ASME III-5)
 
-```
-D_f = sum(n_j / N_f_j)        fatigue damage fraction
-D_c = sum(dt_k / t_r_k)       creep damage fraction (time-fraction rule)
+$$ D_f \;=\; \sum_j \frac{n_j}{N_{f,j}} \qquad\text{(fatigue damage fraction)} $$
 
-Gr91 bilinear envelope: (1,0) -> (0.1, 0.01) -> (0,1)
-Per Code Case N-812 / ORNL/TM-2018/868
-```
+$$ D_c \;=\; \sum_k \frac{\Delta t_k}{t_{r,k}} \qquad\text{(creep damage fraction, time-fraction rule)} $$
+
+Gr91 bilinear interaction envelope: $(1,0) \to (0.1,\,0.01) \to (0,1)$. Per Code Case N-812 / ORNL/TM-2018/868.
 
 ### Hoop Stress (Barlow / API 530)
 
-```
-sigma = P * D_mean / (2 * t_eff)
-t_eff(t) = t_nominal - 0.60 * sqrt(k_p * t)
-```
+$$ \sigma \;=\; \frac{P\,D_{\text{mean}}}{2\,t_{\text{eff}}}, \qquad t_{\text{eff}}(t) \;=\; t_{\text{nominal}} - 0.60\,\sqrt{k_p\,t} $$
+
+The wall-thinning term couples oxidation to stress: as the oxide grows, $t_{\text{eff}}$ falls, hoop stress rises, and Norton creep accelerates. The $0.60$ metal-loss fraction is **[ASSUMED]**.
 
 ## Architecture
 
