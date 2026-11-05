@@ -129,9 +129,9 @@ def omega_creep_rate(eps_cr: float, T: float, sigma: float,
     eps_cr : float
         Accumulated creep strain (dimensionless).
     T : float
-        Temperature [K] (used if omega/eps_dot_0 not provided).
+        Temperature [K]. Not used: Omega and eps_dot_0 are constants here.
     sigma : float
-        Applied stress [Pa] (used if omega/eps_dot_0 not provided).
+        Applied stress [Pa]. Not used: Omega and eps_dot_0 are constants here.
     omega : float, optional
         Omega parameter. Defaults to config value.
     eps_dot_0 : float, optional
