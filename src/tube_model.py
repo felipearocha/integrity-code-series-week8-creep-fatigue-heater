@@ -170,8 +170,9 @@ def simulate_tube_life(
         try:
             t_r_h = creep_engine.rupture_time_api530(sigma, T)
             D_c_increment = dt_hours / t_r_h if t_r_h > 0 else np.inf
-        except Exception:
-            D_c_increment = 0.0
+        except ValueError:
+            # Stress above the range of the LMP fit (about 938 MPa): no finite life
+            D_c_increment = np.inf
         D_c_cum[i + 1] = D_c_cum[i] + D_c_increment
 
         # 6. Check interaction envelope

@@ -283,6 +283,16 @@ class TestFailureRecord:
         assert all(res["max_wall_loss_frac"][i] < 0.4 for i in failed)
 
 
+class TestStressBeyondLMPFit:
+    """Stress above the LMP fit peak must not be scored as zero creep damage."""
+
+    def test_overstress_counts_as_full_creep_damage(self, tube_model):
+        """log10(sigma) peaks near 3.08, so 2,500 MPa has no LMP solution."""
+        result = tube_model.simulate_tube_life(pressure=300.0e6, total_hours=1000.0)
+        assert result.hoop_stress[0] > 2000.0e6
+        assert result.D_creep[-1] > 1.0
+
+
 class TestOmegaIntegration:
     """Tests for Omega creep method integration."""
 
