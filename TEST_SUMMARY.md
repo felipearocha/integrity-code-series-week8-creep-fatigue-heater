@@ -254,7 +254,7 @@ pytest tests/ -k "test_zero_stress" -v
 | **Test Classes** | 72 |
 | **Lines of Test Code** | ~3,800 |
 | **Pass Rate** | 100% (324/324) |
-| **Execution Time** | about 11 seconds |
+| **Execution Time** | 2 to 11 seconds (warm vs cold start) |
 
 ## Fixtures
 
