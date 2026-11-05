@@ -2,12 +2,12 @@
 
 ## Overview
 
-A comprehensive pytest test suite with **324 total tests** across 9 test files, providing extensive coverage of the fired heater tube life prediction system that couples creep, fatigue, and oxidation mechanisms.
+A comprehensive pytest test suite with **333 total tests** across 9 test files, providing extensive coverage of the fired heater tube life prediction system that couples creep, fatigue, and oxidation mechanisms.
 
 ## Test Files and Coverage
 
 ### 1. **test_creep.py** - 46 tests
-Tests for `src/creep_engine.py`: Norton power-law creep, Larson-Miller parameter, API 530 rupture time, Omega method, hoop stress, and integration routines.
+Tests for `src/creep_engine.py`: Norton power-law creep, Larson-Miller parameter, rupture time, Omega method, hoop stress, and integration routines.
 
 **Test Classes:**
 - `TestNortonCreepRate` (9 tests) - Zero/positive stress, temperature/stress monotonicity, benchmark validation
@@ -60,7 +60,7 @@ Tests for `src/creep_fatigue.py`: ASME III-5 bilinear envelope, interaction asse
 - `TestInteractionEnvelopePhysics` (2 tests) - Gr91-specific restrictions
 - `TestEnvelopeInteractionBoundary` (2 tests) - Limits for pure modes
 
-### 5. **test_tube_model.py** - 37 tests
+### 5. **test_tube_model.py** - 45 tests
 Tests for `src/tube_model.py`: Integrated creep-fatigue-oxidation simulation.
 
 **Test Classes:**
@@ -76,6 +76,9 @@ Tests for `src/tube_model.py`: Integrated creep-fatigue-oxidation simulation.
 - `TestEnvelopeComplianceIntegration` (1 test) - Envelope flag consistency
 - `TestCreepStrainLimits` (2 tests) - Failure criteria
 - `TestWallThicknessLimits` (1 test) - Wall loss limits
+- `TestFailureRecord` (3 tests) - Failure time and final state against the closed form
+- `TestStressBeyondLMPFit` (1 test) - Overstress counts as creep damage
+- `TestKeyResults` (4 tests) - README key results against hand calculations
 
 ### 6. **test_surrogate.py** - 21 tests
 Tests for `src/surrogate.py`: GBR surrogate model for life prediction.
@@ -110,8 +113,8 @@ Tests for `src/monte_carlo.py`: Latin Hypercube Sampling, parametric sweep, sens
 - `TestSweepEdgeCases` (3 tests) - Small/large samples
 - `TestSensitivityConsistency` (2 tests) - Effect magnitude detection
 
-### 9. **test_visualization.py** - 33 tests
-Tests for project structure and file existence validation.
+### 9. **test_visualization.py** - 34 tests
+Tests for project structure, file existence and figure generation.
 
 **Test Classes:**
 - `TestProjectStructure` (4 tests) - Module organization
@@ -122,6 +125,7 @@ Tests for project structure and file existence validation.
 - `TestConfigurationFile` (2 tests) - Config validation
 - `TestAssetDirectory` (2 tests) - Asset structure
 - `TestGitIgnorePatterns` (2 tests) - Import capability
+- `TestFigures` (1 test) - Every figure in assets/ is written
 
 ## Test Coverage by Domain
 
@@ -162,7 +166,7 @@ Tests for project structure and file existence validation.
 - Physics monotonicity verification
 - Failure mode detection
 - Numerical stability
-- **Total: 37 tube model tests**
+- **Total: 45 tube model tests**
 
 ### Surrogate Modeling
 - GBR training and prediction
@@ -189,7 +193,7 @@ Tests for project structure and file existence validation.
 - File existence and permissions
 - Module organization
 - Import capability
-- **Total: 33 structure tests**
+- **Total: 34 structure and figure tests**
 
 ## Key Testing Strategies
 
@@ -249,11 +253,11 @@ pytest tests/ -k "test_zero_stress" -v
 
 | Metric | Value |
 |--------|-------|
-| **Total Tests** | 324 |
+| **Total Tests** | 333 |
 | **Test Files** | 9 |
-| **Test Classes** | 72 |
-| **Lines of Test Code** | ~3,800 |
-| **Pass Rate** | 100% (324/324) |
+| **Test Classes** | 76 |
+| **Lines of Test Code** | ~4,000 |
+| **Pass Rate** | 100% (333/333) |
 | **Execution Time** | 2 to 11 seconds (warm vs cold start) |
 
 ## Fixtures

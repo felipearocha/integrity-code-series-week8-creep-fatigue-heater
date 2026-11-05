@@ -145,26 +145,28 @@ with $A = 7.86\times10^{-57}\ \mathrm{[1/(s\cdot Pa^{\,n})]}$, $n = 10.5$, $Q_{c
 $$
 \dot{\varepsilon} \;=\; \dot{\varepsilon}_0\,\exp\!\left(\Omega\,\varepsilon_{cr}\right),
 \qquad
-\varepsilon_{\text{rupture}} \;=\; \frac{1}{\Omega}
+\varepsilon(t) \;=\; -\frac{1}{\Omega}\ln\!\left(1-\frac{t}{t_r}\right),
+\qquad
+t_r \;=\; \frac{1}{\Omega\,\dot{\varepsilon}_0}
 $$
-with $\Omega = 7.5$, $\dot{\varepsilon}_0 = 3.2\times10^{-10}\ \mathrm{/s}$ at 580 °C / 42 MPa, giving rupture strain $1/\Omega = 0.133$.
+with $\Omega = 7.5$ and $\dot{\varepsilon}_0 = 3.2\times10^{-10}\ \mathrm{/s}$, both <strong>[ASSUMED]</strong> and fixed (no dependence on stress or temperature). Strain diverges at $t_r$; $1/\Omega = 0.133$ is reached at $0.632\,t_r$.
 <p class="src">SOURCE: MPC Omega method, API 579-1/ASME FFS-1 Part 10 (Creep Assessment).</p>
-<p>Code: <span class="code-ref">src/creep_engine.py → omega_creep_rate, omega_rupture_strain, omega_rupture_time, integrate_creep_omega</span>.</p>
+<p>Code: <span class="code-ref">src/creep_engine.py → omega_creep_rate, omega_characteristic_strain, omega_rupture_time, integrate_creep_omega</span>.</p>
 </div>
 
 <!-- ─────────────────────────────────────────────────────────── -->
-<h2 id="lmp">3. Larson-Miller Parameter — API 530</h2>
+<h2 id="lmp">3. Larson-Miller Parameter</h2>
 
 <div class="eq-card">
 $$
 \mathrm{LMP} \;=\; T\,\bigl(C + \log_{10} t_r\bigr),
-\qquad C = 20 \ \text{for 9Cr-1Mo}
+\qquad C = 20 \ \text{[ASSUMED]}
 $$
 $$
 \log_{10}\sigma_{\mathrm{MPa}} \;=\; 0.672 + 3.80\times10^{-4}\,\mathrm{LMP} - 1.50\times10^{-8}\,\mathrm{LMP}^{2}
 $$
-<div class="note">Anchor points: $\mathrm{LMP}=19000 \to 300\ \mathrm{MPa}$; $\mathrm{LMP}=21325 \to 90\ \mathrm{MPa}$; $\mathrm{LMP}=23000 \to 30\ \mathrm{MPa}$ (3-point fit of the API 530 minimum-rupture-stress curve).</div>
-<p class="src">SOURCE: API 530, 7th Edition — Calculation of Heater-Tube Thickness in Petroleum Refineries.</p>
+<div class="note">Anchor points: $\mathrm{LMP}=19000 \to 300\ \mathrm{MPa}$; $\mathrm{LMP}=21325 \to 90\ \mathrm{MPa}$; $\mathrm{LMP}=23000 \to 30\ \mathrm{MPa}$ (3-point fit <strong>[ASSUMED]</strong>, not the API 530 curve).</div>
+<p class="src">SOURCE: Larson-Miller form as used in API 530; constants are this package&#39;s fit.</p>
 <p>Code: <span class="code-ref">src/creep_engine.py → larson_miller_parameter, rupture_stress_from_lmp, rupture_time_api530</span>.</p>
 </div>
 
@@ -177,9 +179,9 @@ x^{2} \;=\; k_p\,t,
 \qquad
 k_p \;=\; k_{p0}\,\exp\!\left(-\frac{Q_{ox}}{R\,T}\right)
 $$
-with $k_{p0} = 4.08\times10^{-4}\ \mathrm{m^2/s}$, $Q_{ox} = 250\ \mathrm{kJ/mol}$.
+with $k_{p0} = 4.08\times10^{-4}\ \mathrm{m^2/s}$, $Q_{ox} = 250\ \mathrm{kJ/mol}$, both <strong>[ASSUMED]</strong>.
 Effective metal loss $= 0.60\,x$ <strong>[ASSUMED]</strong> (spallation estimate).
-<p class="src">SOURCE: Parabolic law — Wagner (1933); kinetics — Quadakkers et al. (2005), <em>Oxidation of Metals</em> 64, 175–209 (9Cr in air).</p>
+<p class="src">SOURCE: Parabolic law — Wagner (1933). Rate constants are not traced to a published table.</p>
 <p>Code: <span class="code-ref">src/oxidation.py → parabolic_rate_constant, oxide_thickness, metal_loss, effective_wall_thickness</span>.</p>
 </div>
 
@@ -208,7 +210,7 @@ D_c \;=\; \sum_k \frac{\Delta t_k}{t_{r,k}}
 \qquad\text{(creep damage fraction, time-fraction rule)}
 $$
 <div class="note">Gr91 bilinear interaction envelope: $(1,0) \to (0.1,\,0.01) \to (0,1)$. Damage state is safe when it lies inside the envelope.</div>
-<p class="src">SOURCE: ASME Section III Division 5 — Code Case N-812; ORNL/TM-2018/868 (Messner &amp; Sham, creep-fatigue procedures for Gr91).</p>
+<p class="src">SOURCE: envelope as commonly cited for 9Cr-1Mo-V in ASME Section III Division 5; not checked against the code text.</p>
 <p>Code: <span class="code-ref">src/creep_fatigue.py → creep_damage_fraction, interaction_envelope, is_within_envelope, envelope_margin</span>.</p>
 </div>
 
@@ -231,7 +233,7 @@ $$
 </div>
 
 <footer>
-  Integrity Code Series — Week 8 · Felipe Rocha · 324 / 324 tests passing<br>
+  Integrity Code Series — Week 8 · Felipe Rocha · 333 / 333 tests passing<br>
   Browse the rendered panels in <code>assets/</code> for visual results.
 </footer>
 

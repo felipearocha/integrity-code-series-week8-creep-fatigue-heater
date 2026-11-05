@@ -293,6 +293,36 @@ class TestStressBeyondLMPFit:
         assert result.D_creep[-1] > 1.0
 
 
+class TestKeyResults:
+    """README Key Results, checked against hand calculations."""
+
+    def test_design_damage(self, tube_model):
+        """sigma = 5 MPa * 0.10795 m / (2 * 0.00635 m) = 42.5 MPa.
+
+        Quadratic in LMP: -1.5e-8 L^2 + 3.8e-4 L + 0.672 = log10(42.5) gives L = 22,501,
+        t_r = 10^(22501 / 853.15 - 20) = 2.36e6 h, D_c = 1e5 / t_r = 0.042.
+        Strain range 12.5e-6 * 300 = 3.75e-3 gives Nf = 15,675. 91.3 cycles give D_f = 0.0058.
+        """
+        result = tube_model.simulate_tube_life()
+        assert abs(result.D_creep[-1] - 0.0425) < 0.001
+        assert abs(result.D_fatigue[-1] - 0.0058) < 0.0002
+
+    def test_envelope_limit_at_design_fatigue(self, creep_fatigue):
+        """D_c limit = 0.01 + 0.99 * (0.1 - 0.0058) / 0.1 = 0.943."""
+        assert abs(0.0425 + creep_fatigue.envelope_margin(0.0058, 0.0425) - 0.943) < 0.001
+
+    def test_hot_spot_40_stays_inside_envelope(self, tube_model, config):
+        result = tube_model.simulate_tube_life(T=config.DESIGN_TEMPERATURE + 40.0)
+        assert result.failure_mode == "survived"
+        assert abs(result.D_creep[-1] / 0.0425 - 15.2) < 0.2
+
+    def test_envelope_crossed_near_46(self, tube_model, config):
+        below = tube_model.simulate_tube_life(T=config.DESIGN_TEMPERATURE + 45.0)
+        above = tube_model.simulate_tube_life(T=config.DESIGN_TEMPERATURE + 47.0)
+        assert below.failure_mode == "survived"
+        assert above.failure_mode == "creep_fatigue_interaction"
+
+
 class TestOmegaIntegration:
     """Tests for Omega creep method integration."""
 
