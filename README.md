@@ -199,10 +199,10 @@ STRIDE threat model with 7 assessed threats:
 8. ORNL/TM-2018/868 — Messner & Sham, Creep-fatigue procedures for Gr91
 9. Marathon Martinez CSB Report (2025-03-13)
 
-## Anti-Hallucination Note
+## Source Traceability
 
-Every equation and constant in this package is tagged to its origin, and the
-tiers are applied honestly:
+Every equation and constant in this package is tagged to its origin, in three
+tiers:
 
 - **T1 (published standard / paper):** the Norton, MPC Omega and Larson-Miller
   forms and the ASME III-5 bilinear envelope come from API 530, API 579-1
