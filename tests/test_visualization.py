@@ -234,3 +234,33 @@ class TestGitIgnorePatterns:
         with open(conftest_path, 'r') as f:
             content = f.read()
             assert "sys.path.insert" in content, "conftest should modify sys.path"
+
+
+class TestFigures:
+    """Every plotting function writes its file from computed inputs."""
+
+    def test_all_figures_written(self, tmp_path):
+        import numpy as np
+        from src import config, visualization as v
+        from src.tube_model import simulate_tube_life
+
+        design = simulate_tube_life(dt_hours=1000)
+        hot = simulate_tube_life(T=config.DESIGN_TEMPERATURE + 40.0, dt_hours=1000)
+        omega = simulate_tube_life(use_omega=True, dt_hours=1000)
+        life = np.array([2.0e4, 5.0e4, 1.0e5, 1.0e5])
+        corr = dict(zip("abcde", [-0.5, -0.4, 0.3, 0.0, -0.1]))
+        out = str(tmp_path)
+
+        v._style()
+        v.plot_hero(design, omega, v.life_grid(n=3), out)
+        v.plot_fatigue_curve(out)
+        v.plot_oxide(out)
+        v.plot_life_distribution(life, out)
+        v.plot_tornado(corr, out)
+        v.plot_surrogate(life, life * 1.1, 0.9, corr, out)
+        v.plot_heatmap(out, n=3)
+        v.plot_gif(design, hot, out, frames=3)
+
+        written = {p.name for p in tmp_path.iterdir()}
+        expected = set(os.listdir(os.path.join(os.path.dirname(__file__), "..", "assets")))
+        assert written == expected
