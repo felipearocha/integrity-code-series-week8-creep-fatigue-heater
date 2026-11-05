@@ -251,6 +251,38 @@ class TestTimeArrayConsistency:
             "Failure time should match last array entry"
 
 
+class TestFailureRecord:
+    """The state recorded at failure must be the real one, not array padding."""
+
+    def test_failure_time_matches_closed_form(self, tube_model, config):
+        """Omega run stops at 5% strain: t = (1 - exp(-Omega*eps)) / (Omega*eps_dot_0).
+
+        Hand calculation with Omega = 7.5, eps_dot_0 = 3.2e-10 /s, eps = 0.05:
+        (1 - exp(-0.375)) / 2.4e-9 s = 1.303e8 s = 36,193 h.
+        """
+        result = tube_model.run_baseline_omega()
+        assert result.failure_mode == "creep_rupture"
+        assert abs(result.failure_time_hours - 36193.0) < 0.01 * 36193.0
+
+    def test_final_entry_is_filled(self, tube_model):
+        """Last entry of every history carries real values after a failure."""
+        result = tube_model.run_baseline_omega()
+        assert result.times_hours[-1] == result.failure_time_hours
+        assert result.wall_thickness[-1] > 0.9 * result.wall_thickness[0]
+        assert result.hoop_stress[-1] >= result.hoop_stress[-2]
+        assert result.oxide_thickness[-1] >= result.oxide_thickness[-2]
+        assert result.D_fatigue[-1] >= result.D_fatigue[-2]
+        assert result.creep_rate[-1] >= result.creep_rate[-2]
+
+    def test_sweep_reports_nonzero_life(self, monte_carlo):
+        """A failed sample keeps its failure time and a physical wall loss."""
+        _, res = monte_carlo.run_sweep(n_samples=100, seed=1)
+        failed = [i for i, m in enumerate(res["failure_mode"]) if m != "survived"]
+        assert failed
+        assert all(res["life_hours"][i] > 0.0 for i in failed)
+        assert all(res["max_wall_loss_frac"][i] < 0.4 for i in failed)
+
+
 class TestOmegaIntegration:
     """Tests for Omega creep method integration."""
 
