@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- pyproject: valid `build-backend`, so `pip install .` works; ruff target matches `requires-python`
+- TEST_SUMMARY: counts match the collected suite
+- Docstring of `omega_creep_rate`: `T` and `sigma` are not used
+
+### CI
+- Bump checkout and setup-python to v7, cache to v6
+- Dependabot keeps pip floors unless required and groups github-actions updates
+
+## [1.0.1] - 2026-05-13
+
+### Changed
+- chore(release): prep v1.0.1 - Zenodo metadata, DOI badge, How to Cite
+- chore(meta): add CI matrix, Dependabot, and Integrity Code Series cross-links
+- Lint cleanup: unused imports, unused variables, lambda assignments
+
 ## [1.0.0] - 2026-04-09
 
 ### Added
@@ -19,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Latin Hypercube Sampling Monte Carlo with Spearman sensitivity analysis
 - SHA-256 audit chain and STRIDE threat model for cybersecurity
 - 324 passing tests across 9 test files
-- Hero figure, secondary plots, and animated GIF generation
+- Hero figure, secondary plots, and animated GIF in `assets/` (plotting scripts not included in this repository)
 
 ### References
 - Anchor: Marathon Martinez CSB Report (2025-03-13)
