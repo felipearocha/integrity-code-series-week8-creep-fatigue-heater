@@ -1,9 +1,9 @@
 """
-Creep engine: Norton power-law, Larson-Miller (API 530), and MPC Omega (API 579-1).
+Creep engine: Norton power-law, Larson-Miller, and MPC Omega.
 
 Governing equations:
   Norton:  d(eps_cr)/dt = A * sigma^n * exp(-Q / (R*T))
-  LMP:     T * (C + log10(t_r)) = f(sigma)   [API 530]
+  LMP:     T * (C + log10(t_r)) = f(sigma)
   Omega:   eps_dot = eps_dot_0 * exp(Omega * eps_cr)  [API 579-1 Part 10]
 """
 
@@ -58,7 +58,7 @@ def larson_miller_parameter(T: float, t_r: float) -> float:
 
 def rupture_stress_from_lmp(lmp: float) -> float:
     """
-    Minimum rupture stress from LMP using API 530 polynomial.
+    Minimum rupture stress from LMP using the three-anchor polynomial.
 
     Parameters
     ----------
@@ -78,7 +78,7 @@ def rupture_stress_from_lmp(lmp: float) -> float:
 
 def rupture_time_api530(sigma: float, T: float) -> float:
     """
-    Estimate rupture time using API 530 Larson-Miller method.
+    Estimate rupture time with the Larson-Miller form used by API 530.
 
     Solves: T * (C + log10(t_r)) = LMP(sigma)
     where LMP(sigma) is obtained by inverting the polynomial.
