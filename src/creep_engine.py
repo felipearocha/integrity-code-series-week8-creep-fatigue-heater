@@ -149,11 +149,15 @@ def omega_creep_rate(eps_cr: float, T: float, sigma: float,
     return eps_dot_0 * np.exp(omega * eps_cr)
 
 
-def omega_rupture_strain(omega: float = None) -> float:
+def omega_characteristic_strain(omega: float = None) -> float:
     """
-    Critical creep strain at rupture per Omega method.
+    Characteristic creep strain of the Omega law, 1 / Omega.
 
-    eps_cr_rupture = 1 / Omega  (from integrating Omega equation to infinity)
+    Integrating eps_dot = eps_dot_0 * exp(Omega * eps) gives
+      eps(t) = -ln(1 - t / t_r) / Omega,  t_r = 1 / (Omega * eps_dot_0)
+    Strain diverges at t_r, so the law has no finite rupture strain.
+    1 / Omega is reached at t = (1 - 1/e) * t_r = 0.632 * t_r, where the
+    rate is e times the initial rate.
 
     Parameters
     ----------
@@ -163,7 +167,7 @@ def omega_rupture_strain(omega: float = None) -> float:
     Returns
     -------
     float
-        Rupture strain (dimensionless).
+        Characteristic strain (dimensionless).
     """
     if omega is None:
         omega = config.OMEGA_PARAM
@@ -269,7 +273,8 @@ def integrate_creep_omega(sigma_func, T: float,
     omega : float, optional
     eps_dot_0 : float, optional
     max_strain : float, optional
-        Defaults to 1/Omega (rupture strain).
+        Defaults to the characteristic strain 1/Omega, reached at 0.632 * t_r.
+        Strain diverges at t_r, so a finite stop is always needed.
 
     Returns
     -------
@@ -280,7 +285,7 @@ def integrate_creep_omega(sigma_func, T: float,
     if eps_dot_0 is None:
         eps_dot_0 = config.OMEGA_EPS_DOT_0
     if max_strain is None:
-        max_strain = omega_rupture_strain(omega)
+        max_strain = omega_characteristic_strain(omega)
 
     n_steps = int(total_time_s / dt_s)
     times = np.zeros(n_steps + 1)
