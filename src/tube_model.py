@@ -170,8 +170,9 @@ def simulate_tube_life(
         try:
             t_r_h = creep_engine.rupture_time_api530(sigma, T)
             D_c_increment = dt_hours / t_r_h if t_r_h > 0 else np.inf
-        except Exception:
-            D_c_increment = 0.0
+        except ValueError:
+            # Stress above the range of the LMP fit (about 938 MPa): no finite life
+            D_c_increment = np.inf
         D_c_cum[i + 1] = D_c_cum[i] + D_c_increment
 
         # 6. Check interaction envelope
@@ -191,31 +192,33 @@ def simulate_tube_life(
             failure_idx = i + 1
             break
 
-    # Fill final step
+    # Fill the final entry (end of run, or the step in which failure occurred)
     if failure_mode is None:
         failure_idx = n_steps
         failure_mode = "survived"
-        t_s_final = total_hours * 3600.0
-        oxide_t[n_steps] = oxidation.oxide_thickness(t_s_final, T)
-        wall_t[n_steps] = max(
-            wt_initial - oxide_t[n_steps] * config.OXIDE_METAL_LOSS_FRACTION, 1e-6
+        t_final_h = total_hours
+    else:
+        t_final_h = failure_idx * dt_hours
+    oxide_t[failure_idx] = oxidation.oxide_thickness(t_final_h * 3600.0, T)
+    wall_t[failure_idx] = max(
+        wt_initial - oxide_t[failure_idx] * config.OXIDE_METAL_LOSS_FRACTION, 1e-6
+    )
+    hoop_s[failure_idx] = creep_engine.hoop_stress_thin_wall(
+        pressure, od, wall_t[failure_idx]
+    )
+    if use_omega:
+        creep_r[failure_idx] = creep_engine.omega_creep_rate(
+            creep_eps[failure_idx], T, hoop_s[failure_idx], omega, eps_dot_0
         )
-        hoop_s[n_steps] = creep_engine.hoop_stress_thin_wall(
-            pressure, od, wall_t[n_steps]
+    else:
+        creep_r[failure_idx] = creep_engine.norton_creep_rate(
+            hoop_s[failure_idx], T
         )
-        if use_omega:
-            creep_r[n_steps] = creep_engine.omega_creep_rate(
-                creep_eps[n_steps], T, hoop_s[n_steps], omega, eps_dot_0
-            )
-        else:
-            creep_r[n_steps] = creep_engine.norton_creep_rate(
-                hoop_s[n_steps], T
-            )
-        times_h[n_steps] = total_hours
-        D_f_cum[n_steps] = D_f_per_year * (total_hours / 8760.0)
-        within[n_steps] = creep_fatigue.is_within_envelope(
-            D_f_cum[n_steps], D_c_cum[n_steps]
-        )
+    times_h[failure_idx] = t_final_h
+    D_f_cum[failure_idx] = D_f_per_year * (t_final_h / 8760.0)
+    within[failure_idx] = creep_fatigue.is_within_envelope(
+        D_f_cum[failure_idx], D_c_cum[failure_idx]
+    )
 
     # Trim arrays to actual simulation length
     idx = failure_idx + 1
@@ -230,7 +233,7 @@ def simulate_tube_life(
     result.D_creep = D_c_cum[:idx]
     result.within_envelope = within[:idx]
     result.failure_mode = failure_mode
-    result.failure_time_hours = times_h[min(failure_idx, len(times_h) - 1)]
+    result.failure_time_hours = times_h[failure_idx]
     result.temperature_K = T
     result.pressure_Pa = pressure
 

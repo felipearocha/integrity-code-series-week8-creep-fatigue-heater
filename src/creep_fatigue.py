@@ -8,12 +8,10 @@ Governing rule (time fraction / linear damage):
 
 Acceptance: (D_f, D_c) must lie within the interaction envelope.
 
-Envelope for 9Cr-1Mo (Gr91) per ASME III-5 / Code Case N-812:
+Envelope for 9Cr-1Mo (Gr91), as commonly cited for ASME III-5:
   Bilinear: (1, 0) -> (0.1, 0.01) -> (0, 1)
   This is significantly more restrictive than the (0.3, 0.3) envelope
   used for austenitic steels.
-
-Reference: ORNL/TM-2018/868, Messner & Sham (2019)
 """
 
 import numpy as np
@@ -27,7 +25,7 @@ def creep_damage_fraction(hold_time_s: float, T: float,
 
     D_c = delta_t / t_r
 
-    Uses API 530 Larson-Miller to estimate rupture time.
+    Uses the Larson-Miller fit to estimate rupture time.
 
     Parameters
     ----------
@@ -55,7 +53,7 @@ def interaction_envelope(n_points: int = 200):
     """
     Generate the creep-fatigue interaction envelope for 9Cr-1Mo.
 
-    Bilinear envelope per ASME III-5 Code Case N-812:
+    Bilinear envelope:
       Segment 1: (1, 0) -> (0.1, 0.01)
       Segment 2: (0.1, 0.01) -> (0, 1)
 
