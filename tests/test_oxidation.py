@@ -399,7 +399,7 @@ class TestOxidationTemperatureSensitivity:
     def test_q_equals_250_kj_mol(self, oxidation, config):
         """Verify activation energy matches literature value."""
         assert abs(config.OXIDE_Q - 250.0e3) < 1.0, \
-            "Activation energy should be ~250 kJ/mol (Quadakkers 2005)"
+            "Activation energy should be ~250 kJ/mol"
 
 
 class TestOxidationEdgeCases:

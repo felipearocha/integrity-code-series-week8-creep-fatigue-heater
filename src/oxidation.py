@@ -13,7 +13,7 @@ where:
 Effective metal loss:
   delta_wall = x * OXIDE_METAL_LOSS_FRACTION
 
-Reference: Quadakkers et al., Oxidation of Metals 64 (2005) 175-209
+Rate constants are [ASSUMED]; see config.py.
 """
 
 import numpy as np

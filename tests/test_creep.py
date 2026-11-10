@@ -273,12 +273,16 @@ class TestOmegaCreepRate:
         assert abs(rate - config.OMEGA_EPS_DOT_0) < 1.0e-11, \
             "Rate at zero strain must equal eps_dot_0"
 
-    def test_rupture_strain_from_omega_definition(self, creep_engine, config):
-        """Omega rupture strain should be 1/Omega."""
-        rupture_strain = creep_engine.omega_rupture_strain()
-        expected = 1.0 / config.OMEGA_PARAM
+    def test_characteristic_strain_reached_before_rupture(self, creep_engine, config):
+        """eps = 1/Omega occurs at (1 - 1/e) * t_r, from eps(t) = -ln(1 - t/t_r)/Omega."""
+        eps_c = creep_engine.omega_characteristic_strain()
+        assert abs(eps_c - 1.0 / config.OMEGA_PARAM) < 1.0e-10
 
-        assert abs(rupture_strain - expected) < 1.0e-10
+        t_r = creep_engine.omega_rupture_time()
+        times, strains, _ = creep_engine.integrate_creep_omega(
+            lambda t, eps: 100.0e6, 873.15, t_r / 20000, 1.5 * t_r
+        )
+        assert abs(times[-1] / t_r - (1.0 - np.exp(-1.0))) < 0.002
 
 
 class TestOmegaRuptureTime:
@@ -486,8 +490,8 @@ class TestOmegaIntegration:
         assert len(times) > 0
         assert len(strains) == len(times)
 
-    def test_omega_integration_reaches_rupture(self, creep_engine, config):
-        """Omega integration should reach rupture strain (1/Omega) given enough time."""
+    def test_omega_integration_reaches_characteristic_strain(self, creep_engine, config):
+        """Omega integration should reach the characteristic strain 1/Omega given enough time."""
         T = 873.15
         # Omega rupture time = 1/(Omega * eps_dot_0)
         # Use long enough total time to actually reach rupture
@@ -505,11 +509,10 @@ class TestOmegaIntegration:
             sigma_func, T, dt_s, total_time_s
         )
 
-        rupture_strain = 1.0 / omega
+        characteristic_strain = 1.0 / omega
 
-        # Should approach rupture strain
-        assert strains[-1] > rupture_strain * 0.9, \
-            "Should approach rupture strain"
+        assert strains[-1] > characteristic_strain * 0.9, \
+            "Should approach the characteristic strain"
 
     def test_omega_rates_increasing(self, creep_engine):
         """Omega rates should accelerate as strain increases."""

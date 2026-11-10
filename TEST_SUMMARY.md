@@ -2,12 +2,12 @@
 
 ## Overview
 
-A comprehensive pytest test suite with **324 total tests** across 9 test files, providing extensive coverage of the fired heater tube life prediction system that couples creep, fatigue, and oxidation mechanisms.
+A comprehensive pytest test suite with **333 total tests** across 9 test files, providing extensive coverage of the fired heater tube life prediction system that couples creep, fatigue, and oxidation mechanisms.
 
 ## Test Files and Coverage
 
 ### 1. **test_creep.py** - 46 tests
-Tests for `src/creep_engine.py`: Norton power-law creep, Larson-Miller parameter, API 530 rupture time, Omega method, hoop stress, and integration routines.
+Tests for `src/creep_engine.py`: Norton power-law creep, Larson-Miller parameter, rupture time, Omega method, hoop stress, and integration routines.
 
 **Test Classes:**
 - `TestNortonCreepRate` (9 tests) - Zero/positive stress, temperature/stress monotonicity, benchmark validation
@@ -17,7 +17,7 @@ Tests for `src/creep_engine.py`: Norton power-law creep, Larson-Miller parameter
 - `TestOmegaCreepRate` (3 tests) - Strain acceleration, initial conditions
 - `TestOmegaRuptureTime` (2 tests) - Formula validation
 - `TestHoopStress` (6 tests) - Barlow's formula, stress scaling
-- `TestNortonIntegration` (4 tests) - Convergence, strain accumulation
+- `TestNortonIntegration` (5 tests) - Convergence, strain accumulation
 - `TestOmegaIntegration` (4 tests) - Rupture reaching, rate acceleration
 - `TestIntegrationMonotonicity` (2 tests) - Physics monotonicity checks
 
@@ -25,10 +25,10 @@ Tests for `src/creep_engine.py`: Norton power-law creep, Larson-Miller parameter
 Tests for `src/oxidation.py`: Parabolic oxidation kinetics, Arrhenius temperature dependence, metal loss, wall degradation.
 
 **Test Classes:**
-- `TestParabolicRateConstant` (3 tests) - Arrhenius behavior, temperature sensitivity
+- `TestParabolicRateConstant` (4 tests) - Arrhenius behavior, temperature sensitivity
 - `TestOxideThickness` (6 tests) - √t growth law, boundary conditions
-- `TestMetalLoss` (5 tests) - Proportionality to oxide, temporal trends
-- `TestEffectiveWallThickness` (7 tests) - Wall degradation, clipping at zero
+- `TestMetalLoss` (4 tests) - Proportionality to oxide, temporal trends
+- `TestEffectiveWallThickness` (5 tests) - Wall degradation, clipping at zero
 - `TestOxideThicknessProfile` (4 tests) - Array operations
 - `TestMetalLossProfile` (3 tests) - Array consistency
 - `TestTimeToCriticalLoss` (7 tests) - Critical loss calculation
@@ -56,25 +56,29 @@ Tests for `src/creep_fatigue.py`: ASME III-5 bilinear envelope, interaction asse
 - `TestIsWithinEnvelope` (11 tests) - Origin/boundary/outside logic
 - `TestEnvelopeMargin` (5 tests) - Distance to boundary
 - `TestCreepDamageFraction` (5 tests) - Hold time and stress dependence
-- `TestAccumulatedDamage` (5 tests) - Combined fatigue/creep
+- `TestAccumulatedDamage` (6 tests) - Combined fatigue/creep
 - `TestInteractionEnvelopePhysics` (2 tests) - Gr91-specific restrictions
 - `TestEnvelopeInteractionBoundary` (2 tests) - Limits for pure modes
 
-### 5. **test_tube_model.py** - 37 tests
+### 5. **test_tube_model.py** - 45 tests
 Tests for `src/tube_model.py`: Integrated creep-fatigue-oxidation simulation.
 
 **Test Classes:**
 - `TestBaselineSimulation` (4 tests) - Baseline runs, field population
-- `TestPhysicsMonotonicity` (5 tests) - Stress increase, strain/damage accumulation
-- `TestParameterSensitivity` (6 tests) - T, P, wall, cycles, ΔT effects
+- `TestPhysicsMonotonicity` (6 tests) - Stress increase, strain/damage accumulation
+- `TestParameterSensitivity` (5 tests) - T, P, wall, cycles, ΔT effects
 - `TestFailureModes` (3 tests) - Creep, oxidation, interaction failures
 - `TestTimeArrayConsistency` (3 tests) - Time ordering, array lengths
 - `TestOmegaIntegration` (2 tests) - Omega creep acceleration
 - `TestCustomParameters` (4 tests) - Parameter specification
-- `TestNumericalStability` (3 tests) - Fine/coarse stepping
+- `TestNumericalStability` (4 tests) - Fine/coarse stepping
 - `TestStressComputations` (2 tests) - Hoop stress validity
+- `TestEnvelopeComplianceIntegration` (1 test) - Envelope flag consistency
 - `TestCreepStrainLimits` (2 tests) - Failure criteria
-- `TestWallThicknessLimits` (2 tests) - Wall loss limits
+- `TestWallThicknessLimits` (1 test) - Wall loss limits
+- `TestFailureRecord` (3 tests) - Failure time and final state against the closed form
+- `TestStressBeyondLMPFit` (1 test) - Overstress counts as creep damage
+- `TestKeyResults` (4 tests) - README key results against hand calculations
 
 ### 6. **test_surrogate.py** - 21 tests
 Tests for `src/surrogate.py`: GBR surrogate model for life prediction.
@@ -92,37 +96,36 @@ Tests for `src/surrogate.py`: GBR surrogate model for life prediction.
 Tests for `src/cybersecurity.py`: Audit chain, STRIDE threat model, sensor validation.
 
 **Test Classes:**
-- `TestAuditChain` (9 tests) - Hash chain integrity, tamper detection
-- `TestSTRIDEModel` (7 tests) - All 6 STRIDE categories, mitigations
-- `TestSensorValidation` (8 tests) - Redundancy, spread, physical consistency
-- `TestAuditChainEdgeCases` (4 tests) - Large chains, determinism
+- `TestAuditChain` (11 tests) - Hash chain integrity, tamper detection
+- `TestSTRIDEModel` (8 tests) - All 6 STRIDE categories, mitigations
+- `TestSensorValidation` (10 tests) - Redundancy, spread, physical consistency
+- `TestAuditChainEdgeCases` (5 tests) - Large chains, determinism
 - `TestSecurityProperties` (3 tests) - Hash properties, order sensitivity
-- `TestAuditChainEdgeCases` (continued)
 
 ### 8. **test_monte_carlo.py** - 33 tests
 Tests for `src/monte_carlo.py`: Latin Hypercube Sampling, parametric sweep, sensitivity analysis.
 
 **Test Classes:**
 - `TestLHSSampling` (8 tests) - Sample generation, bounds, reproducibility
-- `TestParametricSweep` (7 tests) - Sweep execution, result validity
-- `TestSensitivityAnalysis` (5 tests) - Correlation detection, feature ranking
+- `TestParametricSweep` (8 tests) - Sweep execution, result validity
+- `TestSensitivityAnalysis` (7 tests) - Correlation detection, feature ranking
 - `TestParameterRangeValidity` (5 tests) - Range realism
 - `TestSweepEdgeCases` (3 tests) - Small/large samples
 - `TestSensitivityConsistency` (2 tests) - Effect magnitude detection
 
-### 9. **test_visualization.py** - 33 tests
-Tests for project structure and file existence validation.
+### 9. **test_visualization.py** - 34 tests
+Tests for project structure, file existence and figure generation.
 
 **Test Classes:**
-- `TestVisualizationFiles` (2 tests) - Directory structure
 - `TestProjectStructure` (4 tests) - Module organization
 - `TestSourceFiles` (9 tests) - All source modules exist
 - `TestTestFiles` (9 tests) - All test files exist
 - `TestFileIsReadable` (2 tests) - File permissions
-- `TestFileNonZeroSize` (2 tests) - Non-empty files
+- `TestFileNonZeroSize` (3 tests) - Non-empty files
 - `TestConfigurationFile` (2 tests) - Config validation
 - `TestAssetDirectory` (2 tests) - Asset structure
 - `TestGitIgnorePatterns` (2 tests) - Import capability
+- `TestFigures` (1 test) - Every figure in assets/ is written
 
 ## Test Coverage by Domain
 
@@ -163,7 +166,7 @@ Tests for project structure and file existence validation.
 - Physics monotonicity verification
 - Failure mode detection
 - Numerical stability
-- **Total: 37 tube model tests**
+- **Total: 45 tube model tests**
 
 ### Surrogate Modeling
 - GBR training and prediction
@@ -190,7 +193,7 @@ Tests for project structure and file existence validation.
 - File existence and permissions
 - Module organization
 - Import capability
-- **Total: 37 structure tests**
+- **Total: 34 structure and figure tests**
 
 ## Key Testing Strategies
 
@@ -239,8 +242,8 @@ pytest tests/test_tube_model.py::TestParameterSensitivity -v
 # Run specific test
 pytest tests/test_fatigue.py::TestCoffinMansonLife::test_monotonic_relationship -v
 
-# Run with coverage report
-pytest tests/ --cov=src --cov-report=html
+# Run with coverage report (pip install coverage)
+coverage run -m pytest tests/ && coverage report
 
 # Run quick smoke test
 pytest tests/ -k "test_zero_stress" -v
@@ -250,12 +253,12 @@ pytest tests/ -k "test_zero_stress" -v
 
 | Metric | Value |
 |--------|-------|
-| **Total Tests** | 328 |
+| **Total Tests** | 333 |
 | **Test Files** | 9 |
-| **Test Classes** | 60+ |
-| **Lines of Test Code** | ~2,500 |
-| **Expected Pass Rate** | >95% |
-| **Execution Time** | <5 seconds (baseline) |
+| **Test Classes** | 76 |
+| **Lines of Test Code** | ~4,000 |
+| **Pass Rate** | 100% (333/333) |
+| **Execution Time** | 2 to 11 seconds (warm vs cold start) |
 
 ## Fixtures
 
