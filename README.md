@@ -32,7 +32,7 @@ Values at the 100,000 h design life, from `python run_all.py`.
 
 > A 40 C hot spot increases creep damage by **15x**. It still sits inside the envelope at 100,000 h. The envelope is crossed at about **+46 C (626 C)**, at the end of the design life.
 
-![Stress, strain, damage path and life map](assets/hero_creep_fatigue_week8.png)
+![Hoop stress and wall thickness, Norton and Omega creep strain, creep-fatigue damage path, and tube life over temperature and pressure](assets/hero_creep_fatigue_week8.png)
 
 ## Sensitivity Analysis (Monte Carlo)
 
@@ -46,7 +46,7 @@ Values at the 100,000 h design life, from `python run_all.py`.
 | Delta T | -0.03 | Negligible: fatigue damage stays far below creep damage |
 | Cycles/year | 0.00 | Negligible: same reason |
 
-![Sensitivity tornado](assets/sensitivity_tornado.png)
+![Spearman rank correlation of tube life with the five sampled inputs](assets/sensitivity_tornado.png)
 
 ## Governing Equations
 

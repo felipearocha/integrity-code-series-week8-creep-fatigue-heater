@@ -59,11 +59,22 @@ def plot_hero(norton, omega, grid, out):
     b.grid(False)
 
     a = axs[0, 1]
-    a.plot(norton.times_hours / 1e3, norton.creep_strain * 100, color=NAVY, label="Norton")
+    # Norton strain is tiny at 580 C, so its curve hugs zero: print the end value
+    a.plot(norton.times_hours / 1e3, norton.creep_strain * 100, color=NAVY,
+           label=f"Norton ({norton.creep_strain[-1] * 100:.3f} % at "
+                 f"{norton.times_hours[-1]:,.0f} h)")
     a.plot(omega.times_hours / 1e3, omega.creep_strain * 100, "--", color=RED,
            label="Omega ([ASSUMED] constants)")
-    a.set(xlabel="Time [1000 h]", ylabel="Creep strain [%]", title="(b) Creep strain")
-    a.legend()
+    # The Omega run stops when it reaches the strain failure criterion
+    a.axhline(100 * config.SIM_MAX_CREEP_STRAIN, ls=":", color=GREY,
+              label=f"Failure criterion {100 * config.SIM_MAX_CREEP_STRAIN:.0f} % [ASSUMED]")
+    a.plot(omega.times_hours[-1] / 1e3, omega.creep_strain[-1] * 100, "o", color=RED)
+    a.annotate(f"Omega {omega.failure_mode.replace('_', ' ')}\nat {omega.failure_time_hours:,.0f} h",
+               (omega.times_hours[-1] / 1e3, omega.creep_strain[-1] * 100),
+               xytext=(10, -30), textcoords="offset points", color=RED)
+    a.set(xlabel="Time [1000 h]", ylabel="Creep strain [%]", title="(b) Creep strain",
+          ylim=(-0.2, 100 * config.SIM_MAX_CREEP_STRAIN * 1.15))
+    a.legend(loc="center right")
 
     a = axs[1, 0]
     _envelope(a)
@@ -110,6 +121,9 @@ def plot_oxide(out):
     b.plot(t / 1e3, loss, color=NAVY)
     b.axhline(100 * config.SIM_MAX_WALL_LOSS_FRACTION, ls="--", color=RED,
               label="Retirement criterion")
+    # Loss stays far below the criterion, so its line hugs zero: print the end value
+    b.annotate(f"{loss[-1]:.2f} % at {t[-1]:,.0f} h", (t[-1] / 1e3, loss[-1]),
+               xytext=(-10, 12), textcoords="offset points", ha="right", color=NAVY)
     b.set(xlabel="Time [1000 h]", ylabel="Wall loss [%]", title="Effective wall loss")
     b.legend()
     _save(fig, out, "oxide_wall_loss.png")
@@ -140,7 +154,7 @@ def plot_tornado(corr, out):
 
 
 def plot_surrogate(y_true, y_pred, r2, importance, out):
-    fig, (a, b) = plt.subplots(1, 2, figsize=(11, 4.5))
+    fig, (a, b) = plt.subplots(1, 2, figsize=(11, 4.5), constrained_layout=True)
     a.scatter(y_true / 1e3, y_pred / 1e3, s=8, color=NAVY, alpha=0.5)
     top = max(y_true.max(), y_pred.max()) / 1e3
     a.plot([0, top], [0, top], "--", color=GREY)
